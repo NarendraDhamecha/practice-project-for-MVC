@@ -12,19 +12,21 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const product = new Product(req.body.title);
-  product.save();
-  res.redirect("/");
+  product.save()
+  .then(() => res.redirect("/"))
+  .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
+  Product.fetchAll()
+  .then(([row, fieldData]) => {
     res.render("shop", {
-      prods: products,
+      prods: row,
       pageTitle: "Shop",
       path: "/",
       hasProducts: products.length > 0,
       activeShop: true,
       productCSS: true,
     });
-  });
+  }).catch(err => console.log(err));
 };
